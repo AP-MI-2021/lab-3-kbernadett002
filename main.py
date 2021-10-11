@@ -35,7 +35,8 @@ def print_menu():
     print("1. Citire lista")
     print("2.Afisare cea mai lunga subsecventa de elemente palindroame")
     print("3.Afisare cea mai lunga subsecventa de elemente care se pot scrie ca x**k")
-    print("4. Iesire")
+    print("4.Afisare cea mai lunga subsecventa de elemente cu toate numerele divizibile cu k")
+    print("5. Iesire")
 
 
 def citire_lista():
@@ -50,6 +51,10 @@ def citire_putere():
     n=int(input("Dati puterea"))
     return n
 
+
+def citire_k():
+    n=int(input("Dati un numar"))
+    return n
 
 def toate_elementele_din_lista_sunt_palindroame(l):
     '''
@@ -128,11 +133,53 @@ def test_get_longest_powers_of_k():
     assert get_longest_powers_of_k([2332,456,1221,131,151],56)==[]
 
 
+def toate_numerele_divizibile_k(lst, k):
+    '''
+    Determina daca o secventa are toate numerele divizibile cu k
+    :param lst: o lista de numere
+    :param k: un numar intreg
+    :return: True daca o secventa are toate numerele divizibile cu k sau False, in caz contrar
+    '''
+    for x in lst:
+        if x % k != 0:
+            return False
+    return True
+
+
+def test_toate_numerele_divizibile_k():
+    assert toate_numerele_divizibile_k([12, 33, 66, 99], 3) is True
+    assert toate_numerele_divizibile_k([10, 100000, 50000], 5) is True
+    assert toate_numerele_divizibile_k([42, 778], 5) is False
+
+
+def get_longest_div_k(lst: list[int], k: int) -> list[int]:
+    '''
+    Determina cea mai lunga subsecventa care are toate elementele divizibile cu k
+    :param lst: o lista de nr
+    :param k: un numar intreg
+    :return: Cea mai lunga subsecventa care are toate elementele divizibile cu k.
+    '''
+    subsecventa_max = []
+    for i in range(len(lst)):
+        for j in range(i, len(lst)):
+            if toate_numerele_divizibile_k(lst[i:j + 1], k) and len(subsecventa_max) < len(lst[i:j + 1]):
+                subsecventa_max = lst[i:j + 1]
+    return subsecventa_max
+
+
+def test_get_longest_div_k():
+    assert get_longest_div_k([21, 3, 33, 52, 45], 3) == [21, 3, 33]
+    assert get_longest_div_k([5, 11, 56], 3) == []
+    assert get_longest_div_k([2, 88, 33, 120], 3) == [33, 120]
+
+
 def main():
     test_toate_elementele_din_lista_sunt_palindroame()
     test_get_longest_all_palindromes()
     test_toate_elementele_x_la_puterea_k()
     test_get_longest_powers_of_k()
+    test_toate_numerele_divizibile_k()
+    test_get_longest_div_k()
     k=0
     l = []
     while True:
@@ -145,7 +192,10 @@ def main():
         elif optiune== "3":
             k = citire_putere()
             print (get_longest_powers_of_k(l,k))
-        elif optiune == "4":
+        elif optiune=="4":
+            k=citire_k()
+            print(get_longest_div_k(l,k))
+        elif optiune == "5":
             break
         else:
             print("Optiune gresita!Reincercati")
